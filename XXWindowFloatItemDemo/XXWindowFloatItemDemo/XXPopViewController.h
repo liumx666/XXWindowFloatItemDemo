@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  XXPopViewController.h
 //  XXWindowFloatItemDemo
 //
 //  Created by lmx on 16/5/2.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface XXPopViewController : UIViewController
 
 @end
-

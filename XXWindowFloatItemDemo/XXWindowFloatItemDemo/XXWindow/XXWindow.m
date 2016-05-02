@@ -12,7 +12,7 @@
 
 
 // 跟踪视图的大小
-#define kTrackViewSize 105
+#define kTrackViewSize 60
 // 跟踪视图中心距屏幕边缘的距离
 #define kMargin 43
 // 跟踪视图的放大比例
@@ -30,14 +30,13 @@
 // 气泡中心距屏幕最右边的距离
 #define kBubbleCenterDistanceX 175
 // 颜色
-#define kColor(r,g,b,a)         [UIColor colorWithRed:(r) / 255.0 green:(g) / 255.0 blue:(b) / 255.0 alpha:(a) / 100.0]
+#define kColor(r,g,b,a) [UIColor colorWithRed:(r) / 255.0 green:(g) / 255.0 blue:(b) / 255.0 alpha:(a) / 100.0]
 
 // 容器视图上边距
 #define kContainnerViewTopMargin 55
 // 容器视图左右边距
 #define kContainnerViewRAndL 25
-// 搜索和镜像按钮的大小
-#define kButtonSize 64
+
 
 @interface XXWindow ()
 
@@ -316,17 +315,6 @@
     }
 }
 
-#pragma mark - 按钮点击事件
-- (void)mirrorButtonClicked:(UIButton *)sender{
-    NSLog(@"%s",__FUNCTION__);
-    [self resumeTrackAndCover];
-    
-}
-
-- (void)searchButtonClicked:(UIButton *)sender{
-    NSLog(@"%s",__FUNCTION__);
-    [self resumeTrackAndCover];
-}
 
 #pragma mark - KVO
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
@@ -348,7 +336,10 @@
 -(UIImageView *)trackView{
     if (_trackView == nil) {
         _trackView = [[UIImageView alloc] init];
-        _trackView.image = [UIImage imageNamed:@"window_move_button"];
+//        _trackView.image = [UIImage imageNamed:@"window_move_button"];
+        _trackView.layer.cornerRadius = kTrackViewSize * 0.5;
+        _trackView.clipsToBounds = YES;
+        _trackView.backgroundColor = [UIColor blueColor];
         _trackView.frame = self.startPosition;
         _trackView.userInteractionEnabled = YES;
         
@@ -422,14 +413,16 @@
         _containerView = [[UIView alloc] init];
         // 底层遮挡按钮，防止触摸事件穿透
         UIButton * backButton = [[UIButton alloc] init];
-        [_containerView addSubview:backButton];
+        _containerView.frame = CGRectMake(kContainnerViewRAndL, kContainnerViewTopMargin, kScreenWidth - 2 * kContainnerViewRAndL, self.bottomPosition.y - kTrackViewSize * 0.5 - kContainnerViewTopMargin);
+        backButton.frame = _containerView.bounds;
         
         if (self.popViewController != nil) {
             [_containerView addSubview:self.popViewController.view];
+            [self.popViewController.view insertSubview:backButton atIndex:0];
+        }else{
+            [_containerView addSubview:backButton];
         }
         
-        _containerView.frame = CGRectMake(kContainnerViewRAndL, kContainnerViewTopMargin, kScreenWidth - 2 * kContainnerViewRAndL, self.bottomPosition.y - kTrackViewSize * 0.5 - kContainnerViewTopMargin);
-        backButton.frame = _containerView.bounds;
         _containerView.backgroundColor = kColor(246, 121, 102, 100);
         _containerView.transform = CGAffineTransformMakeScale(0, 0);
         
